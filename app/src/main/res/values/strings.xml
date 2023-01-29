@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Ur Daily Activities</string>
+    <string name="bem_vindo_a_u_d_a">Bem vindo ao U.D.A.!</string>
+    <string name="open_nav">Abrir o Navigation Drawer</string>
+    <string name="close_nav">Fechar o Navigation Drawer</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="to_do_list">To Do List</string>
+    <string name="estat_sticas">Estatísticas</string>
+    <string name="defini_es">Definições</string>
+    <string name="objetivos">Objetivos</string>
+    <string name="encerrar_sec_o">Encerrar Secção</string>
+    <string name="acera">Acerca da Aplicação</string>
+    <string name="prosseguir">Prosseguir</string>
+    <string name="ol_seja_muito_bem_vindo">Olá, seja muito bem-vindo!</string>
+</resources>
