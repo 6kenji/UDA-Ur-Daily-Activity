@@ -10,9 +10,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import mz.co.uda_urdailyactivities.OtherActivities.My_Fragments.GoalsFragment;
 import mz.co.uda_urdailyactivities.OtherActivities.My_Fragments.InfoFragment;
@@ -72,7 +74,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_exit:
-                System.exit(0);
+                FirebaseAuth.getInstance().signOut();
                 break;
 
         }

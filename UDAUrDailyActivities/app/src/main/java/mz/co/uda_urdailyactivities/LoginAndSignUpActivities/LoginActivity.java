@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import mz.co.uda_urdailyactivities.OtherActivities.MenuActivity;
 import mz.co.uda_urdailyactivities.R;
@@ -104,6 +105,18 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if(user != null){
+            startActivity(new Intent(LoginActivity.this, MenuActivity.class));
+            finish();
+        }
     }
 
     //// SignUp redirection text

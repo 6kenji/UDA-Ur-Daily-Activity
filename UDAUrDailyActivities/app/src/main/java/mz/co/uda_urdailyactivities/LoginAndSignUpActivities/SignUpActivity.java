@@ -5,18 +5,24 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import mz.co.uda_urdailyactivities.Objects.User;
@@ -34,7 +40,8 @@ public class SignUpActivity extends AppCompatActivity {
     Button bt_btn_signup;
     TextView tx_login_text_redirection;
 
-    User user;
+    //// Other
+    String actual_user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +75,7 @@ public class SignUpActivity extends AppCompatActivity {
                 goToLogin(v);
             }
         });
+
     }
 
     //// Some logic down here, hehehehe!
@@ -79,6 +87,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     ////2. SignUP
     private void signUp(View view){
+
         String user_name = ed_name_input.getText().toString();
         String user_email = ed_email_input.getText().toString();
         String user_password = ed_password_input.getText().toString();
@@ -114,10 +123,13 @@ public class SignUpActivity extends AppCompatActivity {
         } else {
             if (user_password.equals(user_password_confirm)) {
                 //// Creating a new user
+
                 auth.createUserWithEmailAndPassword(user_email, user_password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
+                            createUser();
                             Toast.makeText(SignUpActivity.this, "Conta criada com sucesso! ", Toast.LENGTH_SHORT).show();
 
                             ed_name_input.setText(""); ed_email_input.setText("");
@@ -144,5 +156,36 @@ public class SignUpActivity extends AppCompatActivity {
     private void goToLogin(View view){
         Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
         startActivity(intent);
+    }
+
+    ////User Insertion to database
+    private void createUser(){
+        User user = new User(
+                ed_name_input.getText().toString(),
+                ed_password_input.getText().toString(),
+                ed_email_input.getText().toString()
+        );
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> my_users = new HashMap<>();
+        my_users.put("Nome", user.getUser_name());
+        my_users.put("Email", user.getUser_email());
+
+        actual_user = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+
+        DocumentReference documentReference = db.collection("Users").document(actual_user);
+
+        documentReference.set(my_users).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.d("db_Success","User criado com sucesso. xD");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("db_Error","User nao criado com sucesso. xD"+e.toString());
+
+            }
+        });
     }
 }
