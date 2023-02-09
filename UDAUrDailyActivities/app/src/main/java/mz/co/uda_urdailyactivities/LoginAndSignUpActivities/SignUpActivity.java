@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import mz.co.uda_urdailyactivities.Objects.User;
 import mz.co.uda_urdailyactivities.R;
@@ -34,14 +37,18 @@ public class SignUpActivity extends AppCompatActivity {
 
     /// FireBase autentication
     private FirebaseAuth auth;
+    private FirebaseFirestore db;
 
     //// Components
-    EditText ed_name_input, ed_email_input, ed_password_input, ed_password_re_input;
-    Button bt_btn_signup;
-    TextView tx_login_text_redirection;
+    private EditText ed_name_input, ed_email_input, ed_password_input, ed_password_re_input;
+    private Button bt_btn_signup;
+    private ProgressBar progressBar;
+    private  TextView tx_login_text_redirection;
 
     //// Other
-    String actual_user;
+    private String actual_user;
+    private int counter = 0;
+    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +60,7 @@ public class SignUpActivity extends AppCompatActivity {
     //// Here I initialize the connected components to this Activity.
     private void initializeFormWidgetAndUse(){
         makeConnection();
+        progressBar = findViewById(R.id.my_progressbar);
         ed_name_input = findViewById(R.id.name_input);
         ed_email_input = findViewById(R.id.email_input);
         ed_password_input = findViewById(R.id.password_input);
@@ -87,6 +95,8 @@ public class SignUpActivity extends AppCompatActivity {
 
     ////2. SignUP
     private void signUp(View view){
+
+        timer = new Timer();
 
         String user_name = ed_name_input.getText().toString();
         String user_email = ed_email_input.getText().toString();
@@ -123,7 +133,19 @@ public class SignUpActivity extends AppCompatActivity {
         } else {
             if (user_password.equals(user_password_confirm)) {
                 //// Creating a new user
+                progressBar.setVisibility(View.VISIBLE);
+                TimerTask timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        counter ++;
+                        progressBar.setProgress(counter);
 
+                        if(counter == 100){
+                            timer.cancel();
+                        }
+                    }
+                };
+                timer.schedule(timerTask, 0, 100);
                 auth.createUserWithEmailAndPassword(user_email, user_password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 
                     @Override
@@ -165,6 +187,32 @@ public class SignUpActivity extends AppCompatActivity {
                 ed_password_input.getText().toString(),
                 ed_email_input.getText().toString()
         );
+        db = FirebaseFirestore.getInstance();
+        Map<String, String> my_users = new HashMap<>();
+        my_users.put("Nome", user.getUser_name());
+        my_users.put("Email", user.getUser_email());
+
+        db.collection("Users").add(my_users).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                Log.d("db_Success","User criado com sucesso. xD");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("db_Error","User nao criado com sucesso. xD"+e.toString());
+
+            }
+        });
+    }
+
+
+    /*private void createUser(){
+        User user = new User(
+                ed_name_input.getText().toString(),
+                ed_password_input.getText().toString(),
+                ed_email_input.getText().toString()
+        );
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> my_users = new HashMap<>();
@@ -187,5 +235,5 @@ public class SignUpActivity extends AppCompatActivity {
 
             }
         });
-    }
+    }*/
 }

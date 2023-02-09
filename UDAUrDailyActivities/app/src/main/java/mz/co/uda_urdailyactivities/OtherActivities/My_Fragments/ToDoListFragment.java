@@ -11,12 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import mz.co.uda_urdailyactivities.OtherActivities.My_Fragments.FragmentsClasses.CreateActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import mz.co.uda_urdailyactivities.OtherActivities.My_Fragments.FragmentsClasses.EditActivity_Part1;
+import mz.co.uda_urdailyactivities.OtherActivities.My_Fragments.FragmentsClasses.SeeActivity;
 import mz.co.uda_urdailyactivities.R;
 
 public class ToDoListFragment extends Fragment {
@@ -27,8 +28,7 @@ public class ToDoListFragment extends Fragment {
     private FirebaseAuth auth;
 
     //// Components
-
-    Button bt_Add, bt_Edit, bt_Schedule, bt_Remove, bt_See;
+    private Button bt_Add, bt_Edit, bt_Remove, bt_See;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,7 +53,6 @@ public class ToDoListFragment extends Fragment {
     private void initializeFormWidgetAndUse(View view){
         bt_Add = view.findViewById(R.id.add_Activities);
         bt_Edit = view.findViewById(R.id.edit_Activities);
-        bt_Schedule = view.findViewById(R.id.schedule_Activities);
         bt_See = view.findViewById(R.id.see_Activities);
         bt_Remove = view.findViewById(R.id.delete_Activities);
 
@@ -68,13 +67,6 @@ public class ToDoListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 editActivity(v);
-            }
-        });
-
-        bt_Schedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                scheduleActivity(view);
             }
         });
 
@@ -105,19 +97,17 @@ public class ToDoListFragment extends Fragment {
         startActivity(new Intent(getContext(), CreateActivity.class));
     }
 
-    ////3. Creating a new activity
+    ////3. Editing a new activity
     private void editActivity(View v) {
+        startActivity(new Intent(getContext(), EditActivity_Part1.class));
     }
 
     ////4. Creating a new activity
-    private void scheduleActivity(View v) {
-    }
-
-    ////5. Creating a new activity
     private void removeActivity(View v) {
     }
 
-    ////6. Creating a new activity
+    ////5. Getting all your activities
     private void seeActivity(View v) {
+        startActivity(new Intent(getContext(), SeeActivity.class));
     }
 }

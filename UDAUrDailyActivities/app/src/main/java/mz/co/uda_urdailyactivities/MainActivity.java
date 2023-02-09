@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import mz.co.uda_urdailyactivities.LoginAndSignUpActivities.LoginActivity;
+import mz.co.uda_urdailyactivities.OtherActivities.My_Fragments.Settings_Fragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,5 +29,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
             }
         });
+
     }
 }
